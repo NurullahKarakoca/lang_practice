@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lang_practice/blocs/word_list_cubit.dart';
+import 'package:lang_practice/blocs/wordlist/word_list_cubit.dart';
+import 'package:lang_practice/core/route/app_routes.dart';
 import 'package:lang_practice/core/values/dimen.dart';
 import 'package:lang_practice/core/values/string.dart';
 import 'package:lang_practice/models/word/word.dart';
@@ -21,7 +22,13 @@ class _WordsScreenState extends State<WordsScreen> {
       ),
       body: const _WordList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          final result =
+              await Navigator.pushNamed<bool>(context, AppRoutes.routeWordForm);
+          if (result ?? false) {
+            context.read<WordListCubit>().getWordList();
+          }
+        },
         child: const Icon(Icons.add),
       ),
     );
@@ -85,7 +92,7 @@ class _WordEmptyList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text("Please, add new word"),
+      child: Text(AppStrings.emptyWordsMessage),
     );
   }
 }

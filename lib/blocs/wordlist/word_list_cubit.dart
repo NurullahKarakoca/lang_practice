@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lang_practice/repositories/i_word_repository.dart';
 
-import '../models/word/word.dart';
+import '../../models/word/word.dart';
 
 part 'word_list_state.dart';
 

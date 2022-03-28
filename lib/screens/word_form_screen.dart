@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:lang_practice/blocs/wordform/word_form_cubit.dart';
+import 'package:lang_practice/core/route/app_routes.dart';
 import 'package:lang_practice/core/values/dimen.dart';
 import 'package:lang_practice/core/values/string.dart';
 import 'package:lang_practice/inputs/word_title_input.dart';
-import 'package:lang_practice/inputs/word_translation_input.dart';
 
 class WordFormScreen extends StatefulWidget {
   const WordFormScreen({Key? key}) : super(key: key);
@@ -53,7 +53,9 @@ class _WordFormState extends State<_WordForm> {
             ..hideCurrentSnackBar()
             ..showSnackBar(const SnackBar(
                 content: Text(AppStrings.newWordSubmissionSuccess)));
-          Navigator.pop(context, true);
+          Navigator.pushReplacementNamed(
+              context, AppRoutes.routeTranslationForm,
+              arguments: state.newWord);
         }
       },
       child: Padding(
@@ -61,7 +63,6 @@ class _WordFormState extends State<_WordForm> {
         child: Column(
           children: const [
             _WordTitleInput(),
-            _WordTranslationInput(),
             SizedBox(
               height: AppDimens.space,
             ),
@@ -87,27 +88,6 @@ class _WordTitleInput extends StatelessWidget {
               labelText: AppStrings.wordTitleLabel, errorText: error),
           onChanged: (value) {
             context.read<WordFormCubit>().onWordTitleInputChange(value);
-          },
-        );
-      },
-    );
-  }
-}
-
-class _WordTranslationInput extends StatelessWidget {
-  const _WordTranslationInput({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<WordFormCubit, WordFormState>(
-      builder: (context, state) {
-        var error = state.wordTranslationInput.error?.message;
-        return TextFormField(
-          initialValue: state.wordTranslationInput.value,
-          decoration: InputDecoration(
-              labelText: AppStrings.wordTranslationLabel, errorText: error),
-          onChanged: (value) {
-            context.read<WordFormCubit>().onWordTranslationInputChange(value);
           },
         );
       },

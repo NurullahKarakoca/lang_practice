@@ -1,25 +1,13 @@
 part of 'word_list_cubit.dart';
 
-enum WordListStatus { loading, success, failure }
+@freezed
+class WordListState with _$WordListState {
 
-class WordListState extends Equatable {
-  final WordListStatus status;
-  final List<Word> words;
+  const factory WordListState.initial() = _Initial;
 
-  bool get isLoading => status == WordListStatus.loading;
+  const factory WordListState.loaded({@Default([]) List<Word> words}) = _Loaded;
 
-  bool get isSuccess => status == WordListStatus.success;
+  const factory WordListState.loading() = _Loading;
 
-  bool get isFailure => status == WordListStatus.failure;
-
-  const WordListState._(
-      {this.status = WordListStatus.loading, this.words = const []});
-
-  const WordListState.initial() : this._();
-
-  copyWith({List<Word>? words, WordListStatus? status}) => WordListState._(
-      words: words ?? this.words, status: status ?? this.status);
-
-  @override
-  List<Object> get props => [words, status];
+  const factory WordListState.error(String errorMessage) = _Error;
 }

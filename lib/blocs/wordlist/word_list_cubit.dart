@@ -1,19 +1,41 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lang_practice/repositories/i_word_repository.dart';
 
 import '../../models/word/word.dart';
+
+part 'word_list_cubit.freezed.dart';
 
 part 'word_list_state.dart';
 
 class WordListCubit extends Cubit<WordListState> {
   final IWordRepository _wordRepository;
-  WordListCubit(this._wordRepository) : super(const WordListState.initial());
+
+  StreamSubscription? wordStreamSubs;
+
+  WordListCubit(this._wordRepository) : super(const _Initial()) {
+    // _wordRepository.watch().then((value) {
+    //   wordStreamSubs = value.listen((event) {
+    //     getWordList();
+    //   });
+    // });
+  }
+
+  @override
+  Future<void> close() {
+    wordStreamSubs?.cancel();
+    return super.close();
+  }
 
   Future getWordList() async {
-    var words = await _wordRepository.getWords();
-    emit(state.copyWith(status: WordListStatus.success, words: words));
+    emit(const _Loading());
+    try {
+      var words = await _wordRepository.getAll();
+      emit(_Loaded(words: words));
+    } catch (e) {
+      emit(_Error(e.toString()));
+    }
   }
 }

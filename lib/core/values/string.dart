@@ -9,5 +9,10 @@ class AppStrings {
   static const requiredFieldMessage = "*This field is required";
   static const newWordSubmissionInProgress = "New word is adding.";
   static const newWordSubmissionError = "An error occurred.";
-  static const newWordSubmissionSuccess = "New word is added successful.";
+  static const newWordSubmissionSuccess = "New word is added successfully.";
+  static const newTranslationSubmissionInProgress =
+      "New translation is adding.";
+  static const newTranslationSubmissionError = "An error occurred.";
+  static const newTranslationSubmissionSuccess =
+      "New translation is added successfully.";
 }

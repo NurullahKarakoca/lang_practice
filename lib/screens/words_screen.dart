@@ -45,31 +45,32 @@ class _WordList extends StatefulWidget {
 class _WordListState extends State<_WordList> {
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WordListCubit, WordListState>(
-        listener: (context, state) {
-      if (state.isFailure) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Bir hata oluştu")));
-      }
-    }, builder: (context, state) {
-      if (state.isLoading) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      }
+    return BlocBuilder<WordListCubit, WordListState>(
+        builder: (context, state) => state.when(
+            initial: () => const _WordListLoading(),
+            loaded: (words) => _WordListView(words: words),
+            loading: () => const _WordListLoading(),
+            error: (error) => _WordListError(errorMessage: error)));
+  }
+}
 
-      var words = state.words;
-      if (words.isEmpty) return const _WordEmptyList();
+class _WordListView extends StatelessWidget {
+  final List<Word> words;
 
-      return ListView.separated(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        itemCount: words.length,
-        itemBuilder: (context, index) => _WordListItem(word: words[index]),
-        separatorBuilder: (context, index) => const SizedBox(
-          height: AppDimens.space,
-        ),
-      );
-    });
+  const _WordListView({Key? key, required this.words}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    if (words.isEmpty) return const _WordEmptyList();
+
+    return ListView.separated(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      itemCount: words.length,
+      itemBuilder: (context, index) => _WordListItem(word: words[index]),
+      separatorBuilder: (context, index) => const SizedBox(
+        height: AppDimens.space,
+      ),
+    );
   }
 }
 
@@ -93,6 +94,31 @@ class _WordEmptyList extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text(AppStrings.emptyWordsMessage),
+    );
+  }
+}
+
+class _WordListLoading extends StatelessWidget {
+  const _WordListLoading({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
+
+class _WordListError extends StatelessWidget {
+  final String errorMessage;
+
+  const _WordListError({Key? key, required this.errorMessage})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(errorMessage),
     );
   }
 }
